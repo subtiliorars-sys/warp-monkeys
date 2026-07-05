@@ -25,14 +25,17 @@ npm run push:itch      # zip + butler if BUTLER_API_KEY set
 
 ## What the owner must supply
 
-| Item | Why |
-|------|-----|
-| **Butler wharf API key** | Not in agent shell; fleet GitHub secret was invalid per MM #148 |
-| **Butler CLI on PATH** | Not installed on this machine |
-| **itch project create** | First publish requires dashboard project (slug in ITCH_PASTE_READY) |
-| **Cover approval** | `docs/itch-cover.png` — replace if you want different art |
+| Item | Status | Action |
+|------|--------|--------|
+| **GitHub repo** | Done | https://github.com/subtiliorars-sys/warp-monkeys |
+| **CI verify** | Green | `npm run verify` on push |
+| **GitHub Pages** | Deploy may need retry | Repo → Settings → Pages → Source: GitHub Actions. If deploy fails, Settings → Environments → `github-pages` → approve if waiting. Re-run **deploy-pages** workflow. |
+| **Butler wharf API key** | Not in agent shell | Fresh key: https://itch.io/user/settings/api-keys — fleet MM #148 noted old org secret was **invalid** |
+| **Butler CLI** | Not installed here | Download https://itchio.itch.io/butler or use itch desktop app upload |
+| **itch project (first time)** | Owner | Dashboard → Create → slug `jimmythehat-codemonkeys-warp-division` |
+| **Cover art** | Draft in repo | `docs/itch-cover.png` — swap if desired |
 
-I do **not** have your itch.io password or a working `BUTLER_API_KEY` in this session.
+I do **not** have your itch.io password or a working `BUTLER_API_KEY` in this session. MeniscusMaximus has a `BUTLER_API_KEY` secret, but it is not copied to `warp-monkeys` and may need rotation.
 
 ## Verify before announcing
 
