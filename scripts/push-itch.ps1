@@ -10,6 +10,21 @@ $target = "subtiliorars/jimmythehat-codemonkeys-warp-division:html"
 & (Join-Path $Root "scripts/package-itchio.ps1")
 
 if (-not $env:BUTLER_API_KEY) {
+  $keyScript = @'
+import keytar from "keytar";
+const k = await keytar.getPassword("fleet-automation", "itch-butler-key");
+if (k) process.stdout.write(k.trim());
+'@
+  $faRoot = "C:\Users\hrmread\MeniscusMaximus\tools\fleet-automation"
+  if (Test-Path $faRoot) {
+    Push-Location $faRoot
+    $fromKeychain = (node --input-type=module -e $keyScript 2>$null).Trim()
+    Pop-Location
+    if ($fromKeychain) { $env:BUTLER_API_KEY = $fromKeychain }
+  }
+}
+
+if (-not $env:BUTLER_API_KEY) {
   Write-Host ""
   Write-Host "BUTLER_API_KEY not set — zip is ready for manual upload." -ForegroundColor Yellow
   Write-Host "1. Create project (first time): docs/ITCH_PASTE_READY.md"
@@ -21,12 +36,18 @@ if (-not $env:BUTLER_API_KEY) {
 
 $butler = Get-Command butler -ErrorAction SilentlyContinue
 if (-not $butler) {
+  $mmButler = "C:\Users\hrmread\MeniscusMaximus\tools\fleet-automation\bin\butler.exe"
+  if (Test-Path $mmButler) { $butler = Get-Item $mmButler }
+}
+if (-not $butler) {
   Write-Host "Butler CLI not on PATH. Install: https://itch.io/docs/butler/" -ForegroundColor Yellow
   Write-Host "Manual zip: $zip"
   exit 1
 }
 
+$butlerPath = if ($butler -is [System.Management.Automation.ApplicationInfo]) { $butler.Source } else { $butler.FullName }
+
 Write-Host "Pushing to $target ..."
-& butler push $zip $target
-& butler status $target
+& $butlerPath push $zip $target
+& $butlerPath status $target
 Write-Host "Done. Verify: https://subtiliorars.itch.io/jimmythehat-codemonkeys-warp-division"

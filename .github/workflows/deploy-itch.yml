@@ -1,0 +1,57 @@
+name: deploy-itch
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install deps and package HTML zip
+        run: |
+          npm ci
+          npm run package:itch
+
+      - name: Check Butler API key
+        id: butler_key
+        continue-on-error: true
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          node -e "
+          const key=(process.env.BUTLER_API_KEY||'').trim();
+          if(!key){console.error('BUTLER_API_KEY missing');process.exit(1);}
+          fetch('https://api.itch.io/credentials/info',{headers:{Authorization:'Bearer '+key,Accept:'application/json'}})
+            .then(r=>r.json().then(d=>{if(!d.type)throw new Error(JSON.stringify(d));console.log('Butler key OK');}))
+            .catch(e=>{console.error(e);process.exit(1);});
+          "
+
+      - uses: remarkablegames/setup-butler@v2
+
+      - name: Push to itch.io
+        if: steps.butler_key.outcome == 'success'
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          ZIP="release/warp-monkeys-browser-v${VERSION}.zip"
+          TARGET="subtiliorars/jimmythehat-codemonkeys-warp-division:html"
+          echo "Pushing $ZIP -> $TARGET"
+          butler push "$ZIP" "$TARGET"
+          butler status "$TARGET"
+
+      - name: Project page missing?
+        if: failure()
+        run: |
+          echo "::warning::If Butler said 'invalid game', create the project once at https://itch.io/game/new"
+          echo "Slug: jimmythehat-codemonkeys-warp-division (HTML). Then re-run this workflow."
