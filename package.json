@@ -1,0 +1,25 @@
+{
+  "name": "warp-monkeys",
+  "version": "1.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite --open",
+    "build": "node scripts/write-build-stamp.mjs && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "verify": "tsc --noEmit && vitest run && vite build && powershell -ExecutionPolicy Bypass -File ./scripts/verify-html.ps1",
+    "package:itch": "powershell -ExecutionPolicy Bypass -File ./scripts/package-itchio.ps1",
+    "push:itch": "powershell -ExecutionPolicy Bypass -File ./scripts/push-itch.ps1"
+  },
+  "dependencies": {
+    "phaser": "^3.87.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vite": "^5.4.19",
+    "vitest": "^2.1.9"
+  }
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeMonkeys: Warp Division — Playtest</title>
+    <meta name="description" content="Playtest build — Shenanigan Card #001: swap the Mayor's coffee." />
+    <meta name="theme-color" content="#1a1408" />
+    <style>
+      :root {
+        --bg: #1a1408;
+        --panel: rgba(30, 22, 10, 0.95);
+        --banana: #ffd93d;
+        --coffee: #6b4423;
+        --terminal: #7cfc7c;
+        --text: #fff8e7;
+        --muted: #b8a88a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Consolas", "Courier New", monospace;
+        color: var(--text);
+        background: radial-gradient(circle at 50% 0%, #3d2e14, var(--bg) 55%);
+      }
+      .wrap {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+      }
+      h1 {
+        color: var(--banana);
+        font-size: 1.75rem;
+        margin: 0 0 8px;
+      }
+      .sub {
+        color: var(--terminal);
+        margin: 0 0 20px;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid #4a3728;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      iframe {
+        width: 100%;
+        height: 600px;
+        border: 2px solid var(--banana);
+        border-radius: 4px;
+        background: #000;
+      }
+      a {
+        color: var(--terminal);
+      }
+      ul {
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>CodeMonkeys: Warp Division</h1>
+      <p class="sub">Temporal Shenanigans Bureau — training sim</p>
+      <div class="panel">
+        <iframe src="./index.html" title="Warp Division playtest"></iframe>
+      </div>
+      <div class="panel">
+        <strong>Shared fuel run</strong>
+        <ul>
+          <li>Collect banana coins (Monkey HQ) and groove coins (Dandy Neon)</li>
+          <li>T — hop timelines · Q — space warp</li>
+          <li>Fuel the shared ship to 75% — random destination each launch</li>
+          <li>It's the journey that matters</li>
+        </ul>
+        <p><a href="./index.html">Open full-screen</a></p>
+      </div>
+    </div>
+  </body>
+</html>

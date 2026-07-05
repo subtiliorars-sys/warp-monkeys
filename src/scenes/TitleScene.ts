@@ -1,0 +1,73 @@
+import Phaser from "phaser";
+import { journeyMotto } from "../sim/mission.js";
+import { drawArenaFloor } from "../render/shapes.js";
+import { GAME_HEIGHT, GAME_WIDTH } from "../game.js";
+
+export class TitleScene extends Phaser.Scene {
+  private floor!: Phaser.GameObjects.Graphics;
+
+  constructor() {
+    super("TitleScene");
+  }
+
+  create(): void {
+    this.floor = this.add.graphics();
+    drawArenaFloor(this.floor, GAME_WIDTH, GAME_HEIGHT, "monkey");
+
+    this.add
+      .text(GAME_WIDTH / 2, 88, "CODEMONKEYS × GROOVE PATROL", {
+        fontFamily: "monospace",
+        fontSize: "26px",
+        color: "#ffd93d",
+      })
+      .setOrigin(0.5);
+
+    this.add
+      .text(GAME_WIDTH / 2, 128, "WARP DIVISION", {
+        fontFamily: "monospace",
+        fontSize: "32px",
+        color: "#3ef0ff",
+      })
+      .setOrigin(0.5);
+
+    this.add
+      .text(
+        GAME_WIDTH / 2,
+        210,
+        "Warp Monkeys and Space Dandies hop timelines\nand collect coins for the shared ship.\n" +
+          journeyMotto() +
+          " — destination is random every launch.",
+        {
+          fontFamily: "monospace",
+          fontSize: "17px",
+          color: "#fff8e7",
+          align: "center",
+        }
+      )
+      .setOrigin(0.5);
+
+    this.add
+      .text(GAME_WIDTH / 2, 320, "WASD move  ·  Q space-warp  ·  T timeline hop\nSPACE to start", {
+        fontFamily: "monospace",
+        fontSize: "16px",
+        color: "#b8a88a",
+        align: "center",
+      })
+      .setOrigin(0.5);
+
+    this.add
+      .text(GAME_WIDTH / 2, GAME_HEIGHT - 40, "fan homage — original characters · fleet crossover", {
+        fontFamily: "monospace",
+        fontSize: "13px",
+        color: "#7a6a50",
+      })
+      .setOrigin(0.5);
+
+    this.input.keyboard?.once("keydown-SPACE", () => this.startMission());
+    this.input.once("pointerdown", () => this.startMission());
+  }
+
+  private startMission(): void {
+    this.scene.start("PlayScene");
+  }
+}
