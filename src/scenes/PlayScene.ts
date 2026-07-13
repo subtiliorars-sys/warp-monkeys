@@ -27,6 +27,7 @@ import {
   type EchoRecorder,
   type GhostReplay,
 } from "../sim/timeEcho.js";
+import { getWarpAudio } from "../audio/warpAudio.js";
 import {
   drawArenaFloor,
   drawBananaCoin,
@@ -208,6 +209,7 @@ export class PlayScene extends Phaser.Scene {
     const oldFuel = this.mission.shipFuel;
     this.mission = tryCollectCoins(this.mission, player);
     if (this.mission.shipFuel !== oldFuel) {
+      getWarpAudio().playCoin();
       if (typeof localStorage !== "undefined") {
         localStorage.setItem("warp-patrol-crossover-fuel", this.mission.shipFuel.toString());
         if (this.mission.phase === "launched" && this.mission.destination) {
@@ -264,6 +266,7 @@ export class PlayScene extends Phaser.Scene {
     const before = this.mission.warpCount;
     this.mission = applyWarp(this.mission, now);
     if (this.mission.warpCount === before) return;
+    getWarpAudio().playWarp();
 
     const target = computeWarpTarget(
       { x: this.playerX, y: this.playerY },
@@ -285,6 +288,7 @@ export class PlayScene extends Phaser.Scene {
     const before = this.mission.timeline;
     this.mission = toggleTimeline(this.mission, now);
     if (this.mission.timeline === before) return;
+    getWarpAudio().playHop();
 
     // Dual-crew Time Echo: replay ~3s of the crew you just left.
     this.ghostReplay = beginGhostReplay(this.echoRecorder, before, now);
