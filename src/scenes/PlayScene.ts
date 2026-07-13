@@ -70,6 +70,7 @@ export class PlayScene extends Phaser.Scene {
   private hudHint!: Phaser.GameObjects.Text;
   private hudWarp!: Phaser.GameObjects.Text;
   private hudTimeline!: Phaser.GameObjects.Text;
+  private hudMute!: Phaser.GameObjects.Text;
 
   private mission!: MissionState;
   private echoRecorder: EchoRecorder = createEchoRecorder();
@@ -146,6 +147,11 @@ export class PlayScene extends Phaser.Scene {
       .setOrigin(1, 0)
       .setScrollFactor(0)
       .setDepth(1000);
+    this.hudMute = this.add
+      .text(GAME_WIDTH - 16, GAME_HEIGHT - 16, "", { fontFamily: "monospace", fontSize: "13px", color: "#7a6a50" })
+      .setOrigin(1, 1)
+      .setScrollFactor(0)
+      .setDepth(1000);
 
     const kb = this.input.keyboard!;
     this.keys = {
@@ -163,6 +169,7 @@ export class PlayScene extends Phaser.Scene {
 
     kb.on("keydown-Q", () => this.tryWarp());
     kb.on("keydown-T", () => this.tryTimelineHop());
+    kb.on("keydown-M", () => this.toggleMute());
 
     this.rebuildCoinGraphics();
     this.redrawStatic();
@@ -393,9 +400,21 @@ export class PlayScene extends Phaser.Scene {
     }
   }
 
+  private toggleMute(): void {
+    getWarpAudio().toggleMute();
+    this.refreshMuteHud();
+  }
+
+  private refreshMuteHud(): void {
+    const muted = getWarpAudio().isMuted();
+    this.hudMute.setText(muted ? "M · MUTED" : "M · sound on");
+    this.hudMute.setColor(muted ? "#ff6b6b" : "#7a6a50");
+  }
+
   private refreshHud(now = this.time.now): void {
     const warpCd = warpCooldownRemainingMs(this.mission, now);
     const hopCd = timelineHopCooldownRemainingMs(this.mission, now);
+    this.refreshMuteHud();
     this.hudWarp.setText(warpCd > 0 ? `Q WARP ${Math.ceil(warpCd / 1000)}s` : "Q WARP READY");
     this.hudTimeline.setText(
       hopCd > 0

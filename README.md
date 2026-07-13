@@ -34,6 +34,7 @@ Launch checklist: `docs/PUBLIC_LAUNCH.md` · itch copy-paste: `docs/ITCH_PASTE_R
 | WASD / arrows | Move (Chimp-7 or Groove Patrol avatar) |
 | Q | Space warp within timeline |
 | T | Timeline hop — Monkey HQ ↔ Dandy Neon (Time Echo ghost ~3s) |
+| M | Toggle mute (persists in localStorage) |
 | SPACE | Start / retry |
 
 ## Slice — shared fuel run
