@@ -46,13 +46,38 @@ export class TitleScene extends Phaser.Scene {
       )
       .setOrigin(0.5);
 
+    const savedFuel = typeof localStorage !== "undefined" ? localStorage.getItem("warp-patrol-crossover-fuel") : null;
+    const crossoverFuel = savedFuel ? parseInt(savedFuel, 10) || 0 : 0;
+    const lastDest = typeof localStorage !== "undefined" ? localStorage.getItem("warp-patrol-destination") : null;
+
+    let crossoverText = `Shared Ship Fuel: ${crossoverFuel}%`;
+    if (crossoverFuel >= 75) {
+      crossoverText = "Shared Ship Status: READY FOR LAUNCH!";
+      if (lastDest) {
+        crossoverText = `Launched to: ${lastDest}!`;
+      }
+    }
+
     this.add
-      .text(GAME_WIDTH / 2, 320, "WASD move  ·  Q space-warp  ·  T timeline hop\nSPACE to start", {
+      .text(GAME_WIDTH / 2, 276, crossoverText, {
         fontFamily: "monospace",
         fontSize: "16px",
-        color: "#b8a88a",
-        align: "center",
+        color: "#3ef0ff",
       })
+      .setOrigin(0.5);
+
+    this.add
+      .text(
+        GAME_WIDTH / 2,
+        320,
+        "WASD move  ·  Q space-warp  ·  T timeline hop (Time Echo)\nSPACE to start",
+        {
+          fontFamily: "monospace",
+          fontSize: "16px",
+          color: "#b8a88a",
+          align: "center",
+        }
+      )
       .setOrigin(0.5);
 
     this.add

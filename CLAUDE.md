@@ -9,8 +9,10 @@ CodeMonkeys meta fleet comedy game. Phaser 3 + TypeScript.
 
 ## Architecture
 
-- `src/sim/mission.ts` — testable mission logic (warp, suspicion, swap objective)
-- `src/scenes/PlayScene.ts` — slice 0 arena + guard patrol
+- Scenes: Boot → Title → Play → Debrief
+- `src/sim/mission.ts` — testable mission logic (warp, suspicion, coins, timeline hop)
+- `src/sim/timeEcho.ts` — ~3s movement buffer + ghost replay on dual-crew T hop
+- `src/scenes/PlayScene.ts` — arena + guard + Time Echo ghost
 - `WAVES.md` — one wave = one PR (`automation/wave-*`)
 
 ## Concept

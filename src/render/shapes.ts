@@ -55,9 +55,16 @@ export function drawGrooveCoin(g: Phaser.GameObjects.Graphics, x: number, y: num
   g.fillCircle(x + Math.cos(spin * 2) * 3, y + Math.sin(spin * 2) * 3, 3);
 }
 
-export function drawMonkey(g: Phaser.GameObjects.Graphics, x: number, y: number, stealth: boolean): void {
+export function drawMonkey(
+  g: Phaser.GameObjects.Graphics,
+  x: number,
+  y: number,
+  stealth: boolean,
+  alphaMul = 1
+): void {
   g.clear();
-  const alpha = stealth ? 0.45 : 1;
+  const alpha = (stealth ? 0.45 : 1) * alphaMul;
+  if (alpha <= 0.01) return;
   g.fillStyle(BANANA, alpha);
   g.fillCircle(x, y, 14);
   g.fillStyle(0x8b6914, alpha);
@@ -72,15 +79,38 @@ export function drawMonkey(g: Phaser.GameObjects.Graphics, x: number, y: number,
   g.strokePath();
 }
 
-export function drawDandyPatrol(g: Phaser.GameObjects.Graphics, x: number, y: number, stealth: boolean): void {
+export function drawDandyPatrol(
+  g: Phaser.GameObjects.Graphics,
+  x: number,
+  y: number,
+  stealth: boolean,
+  alphaMul = 1
+): void {
   g.clear();
-  const alpha = stealth ? 0.45 : 1;
+  const alpha = (stealth ? 0.45 : 1) * alphaMul;
+  if (alpha <= 0.01) return;
   g.fillStyle(NEON_PINK, alpha);
   g.fillTriangle(x, y - 16, x - 14, y + 12, x + 14, y + 12);
   g.fillStyle(NEON_CYAN, alpha);
   g.fillRect(x - 6, y + 4, 12, 8);
   g.lineStyle(2, 0xffffff, alpha * 0.5);
   g.strokeTriangle(x, y - 16, x - 14, y + 12, x + 14, y + 12);
+}
+
+/** Translucent afterimage of the crew left behind on a timeline hop. */
+export function drawTimeEchoGhost(
+  g: Phaser.GameObjects.Graphics,
+  crew: Timeline,
+  x: number,
+  y: number,
+  stealth: boolean,
+  alpha: number
+): void {
+  if (crew === "monkey") {
+    drawMonkey(g, x, y, stealth, alpha);
+  } else {
+    drawDandyPatrol(g, x, y, stealth, alpha);
+  }
 }
 
 export function drawGuard(g: Phaser.GameObjects.Graphics, x: number, y: number, alert: number): void {

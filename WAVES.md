@@ -24,13 +24,15 @@ One wave = one PR. Branch prefix: `automation/wave-*`. Verify: `npm run verify`.
 - [ ] GitHub repo + Pages deploy (owner)
 
 ### Wave WM-W2 — Time Echo
-**Status:** `pending`  
-- [ ] Record 3s ghost replay for dual-crew switches
+**Status:** `active` (2026-07-13)  
+**Scope:**
+- [x] Record ~3s ghost replay for dual-crew switches (T hop)
+- [ ] Owner PR review / merge when asked
 
 ### Wave WM-W3 — Shared progress with space-dandy-game
-**Status:** `pending`  
-- [ ] Cross-repo localStorage fuel key
-- [ ] SD-W6 counterpart wave
+**Status:** `active` (2026-07-13)  
+- [x] Cross-repo localStorage fuel key
+- [x] SD-W6 counterpart wave
 
 ### Wave WM-W4 — Fleet easter eggs
 **Status:** `pending`  
