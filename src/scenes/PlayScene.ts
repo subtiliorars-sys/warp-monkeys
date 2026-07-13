@@ -35,6 +35,8 @@ import {
   drawGrooveCoin,
   drawGuard,
   drawMonkey,
+  drawNutCoin,
+  drawNutTruck,
   drawSharedShip,
   drawShipFuelBar,
   drawSuspicionBar,
@@ -360,16 +362,21 @@ export class PlayScene extends Phaser.Scene {
       if (!coin) continue;
       if (coin.timeline === "monkey") {
         drawBananaCoin(entry.gfx, coin.x, coin.y, entry.spin + this.coinSpin);
-      } else {
+      } else if (coin.timeline === "dandy") {
         drawGrooveCoin(entry.gfx, coin.x, coin.y, entry.spin + this.coinSpin);
+      } else {
+        drawNutCoin(entry.gfx, coin.x, coin.y, entry.spin + this.coinSpin);
       }
     }
 
     if (this.mission.timeline === "monkey") {
       drawMonkey(this.avatarGfx, this.playerX, this.playerY, stealth);
       drawGuard(this.guardGfx, this.guardX, GUARD_Y, this.mission.suspicion);
-    } else {
+    } else if (this.mission.timeline === "dandy") {
       drawDandyPatrol(this.avatarGfx, this.playerX, this.playerY, stealth);
+      this.guardGfx.clear();
+    } else {
+      drawNutTruck(this.avatarGfx, this.playerX, this.playerY, stealth);
       this.guardGfx.clear();
     }
 
