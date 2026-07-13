@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { journeyMotto } from "../sim/mission.js";
+import { getWarpAudio } from "../audio/warpAudio.js";
 import { drawArenaFloor } from "../render/shapes.js";
 import { GAME_HEIGHT, GAME_WIDTH } from "../game.js";
 
@@ -70,7 +71,7 @@ export class TitleScene extends Phaser.Scene {
       .text(
         GAME_WIDTH / 2,
         320,
-        "WASD move  ·  Q space-warp  ·  T timeline hop (Time Echo)\nSPACE to start",
+        "WASD move  ·  Q space-warp  ·  T timeline hop (Time Echo)\nM mute  ·  SPACE to start",
         {
           fontFamily: "monospace",
           fontSize: "16px",
@@ -88,6 +89,7 @@ export class TitleScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    this.input.keyboard?.on("keydown-M", () => getWarpAudio().toggleMute());
     this.input.keyboard?.once("keydown-SPACE", () => this.startMission());
     this.input.once("pointerdown", () => this.startMission());
   }
