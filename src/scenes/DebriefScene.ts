@@ -75,7 +75,7 @@ export class DebriefScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(GAME_WIDTH / 2, GAME_HEIGHT - 48, "SPACE — another journey", {
+      .text(GAME_WIDTH / 2, GAME_HEIGHT - 48, "click or SPACE — another journey", {
         fontFamily: "monospace",
         fontSize: "16px",
         color: "#ffd93d",
