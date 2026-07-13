@@ -16,7 +16,7 @@ export class TitleScene extends Phaser.Scene {
     drawArenaFloor(this.floor, GAME_WIDTH, GAME_HEIGHT, "monkey");
 
     this.add
-      .text(GAME_WIDTH / 2, 88, "CODEMONKEYS × GROOVE PATROL", {
+      .text(GAME_WIDTH / 2, 88, "CODEMONKEYS Ã— GROOVE PATROL", {
         fontFamily: "monospace",
         fontSize: "26px",
         color: "#ffd93d",
@@ -37,7 +37,7 @@ export class TitleScene extends Phaser.Scene {
         210,
         "Warp Monkeys and Space Dandies hop timelines\nand collect coins for the shared ship.\n" +
           journeyMotto() +
-          " — destination is random every launch.",
+          " â€” destination is random every launch.",
         {
           fontFamily: "monospace",
           fontSize: "17px",
@@ -71,7 +71,7 @@ export class TitleScene extends Phaser.Scene {
       .text(
         GAME_WIDTH / 2,
         320,
-        "WASD move  ·  Q space-warp  ·  T timeline hop (Time Echo)\nM mute  ·  click or SPACE to start",
+        "WASD move  Â·  Q space-warp  Â·  T timeline hop (Time Echo)\nM mute  Â·  click or SPACE to start",
         {
           fontFamily: "monospace",
           fontSize: "16px",
@@ -82,7 +82,7 @@ export class TitleScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(GAME_WIDTH / 2, GAME_HEIGHT - 40, "fan homage — original characters · fleet crossover", {
+      .text(GAME_WIDTH / 2, GAME_HEIGHT - 40, "fan homage â€” original characters Â· fleet crossover", {
         fontFamily: "monospace",
         fontSize: "13px",
         color: "#7a6a50",
