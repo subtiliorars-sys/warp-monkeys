@@ -17,10 +17,17 @@ import {
   tryCollectCoins,
   visibleCoins,
   warpCooldownRemainingMs,
-  WARP_COOLDOWN_MS,
-  TIMELINE_HOP_COOLDOWN_MS,
 } from "../sim/mission.js";
 import type { MissionState } from "../sim/mission.js";
+import {
+  beginGhostReplay,
+  createEchoRecorder,
+  ghostPoseAt,
+  recordEchoSample,
+  type EchoRecorder,
+  type GhostReplay,
+} from "../sim/timeEcho.js";
+import { getWarpAudio } from "../audio/warpAudio.js";
 import {
   drawArenaFloor,
   drawBananaCoin,
@@ -29,9 +36,12 @@ import {
   drawGrooveCoin,
   drawGuard,
   drawMonkey,
+  drawNutCoin,
+  drawNutTruck,
   drawSharedShip,
   drawShipFuelBar,
   drawSuspicionBar,
+  drawTimeEchoGhost,
 } from "../render/shapes.js";
 import { ARENA_MARGIN, GAME_HEIGHT, GAME_WIDTH } from "../game.js";
 
@@ -48,6 +58,7 @@ const GUARD_SPEED = 90;
 export class PlayScene extends Phaser.Scene {
   private floor!: Phaser.GameObjects.Graphics;
   private avatarGfx!: Phaser.GameObjects.Graphics;
+  private ghostGfx!: Phaser.GameObjects.Graphics;
   private guardGfx!: Phaser.GameObjects.Graphics;
   private shipHudGfx!: Phaser.GameObjects.Graphics;
   private fuelBarGfx!: Phaser.GameObjects.Graphics;
@@ -61,6 +72,8 @@ export class PlayScene extends Phaser.Scene {
   private hudTimeline!: Phaser.GameObjects.Text;
 
   private mission!: MissionState;
+  private echoRecorder: EchoRecorder = createEchoRecorder();
+  private ghostReplay: GhostReplay | null = null;
   private playerX = GAME_WIDTH / 2;
   private playerY = GAME_HEIGHT - 100;
   private guardX = GUARD_X_MIN;
@@ -88,14 +101,27 @@ export class PlayScene extends Phaser.Scene {
 
   create(): void {
     this.mission = createMissionState();
+    if (typeof localStorage !== "undefined") {
+      const savedFuel = localStorage.getItem("warp-patrol-crossover-fuel");
+      let initialFuel = savedFuel ? Math.min(100, Math.max(0, parseInt(savedFuel, 10) || 0)) : 0;
+      if (initialFuel >= LAUNCH_FUEL) {
+        initialFuel = 0;
+        localStorage.setItem("warp-patrol-crossover-fuel", "0");
+        localStorage.removeItem("warp-patrol-destination");
+      }
+      this.mission.shipFuel = initialFuel;
+    }
     this.peels = [];
     this.coinGfx = [];
+    this.echoRecorder = createEchoRecorder();
+    this.ghostReplay = null;
     this.playerX = GAME_WIDTH / 2;
     this.playerY = GAME_HEIGHT - 100;
     this.guardX = GUARD_X_MIN;
     this.guardDir = 1;
 
     this.floor = this.add.graphics();
+    this.ghostGfx = this.add.graphics().setDepth(9);
     this.avatarGfx = this.add.graphics().setDepth(10);
     this.guardGfx = this.add.graphics().setDepth(5);
     this.shipHudGfx = this.add.graphics().setDepth(900);
@@ -179,7 +205,28 @@ export class PlayScene extends Phaser.Scene {
     const guard = { x: this.guardX, y: GUARD_Y };
     const sees = guardSeesPlayer(guard, player, this.mission, now);
     this.mission = tickSuspicion(this.mission, sees, dtMs, now);
+
+    const oldFuel = this.mission.shipFuel;
     this.mission = tryCollectCoins(this.mission, player);
+    if (this.mission.shipFuel !== oldFuel) {
+      getWarpAudio().playCoin();
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("warp-patrol-crossover-fuel", this.mission.shipFuel.toString());
+        if (this.mission.phase === "launched" && this.mission.destination) {
+          localStorage.setItem("warp-patrol-destination", this.mission.destination);
+        }
+      }
+    }
+
+    const stealth = isStealthed(this.mission, now);
+    this.echoRecorder = recordEchoSample(
+      this.echoRecorder,
+      now,
+      this.playerX,
+      this.playerY,
+      stealth
+    );
+    this.advanceGhost(now);
 
     if (this.mission.collectedCoins.length !== this.countVisibleCoinIds()) {
       this.rebuildCoinGraphics();
@@ -219,6 +266,7 @@ export class PlayScene extends Phaser.Scene {
     const before = this.mission.warpCount;
     this.mission = applyWarp(this.mission, now);
     if (this.mission.warpCount === before) return;
+    getWarpAudio().playWarp();
 
     const target = computeWarpTarget(
       { x: this.playerX, y: this.playerY },
@@ -240,11 +288,44 @@ export class PlayScene extends Phaser.Scene {
     const before = this.mission.timeline;
     this.mission = toggleTimeline(this.mission, now);
     if (this.mission.timeline === before) return;
+    getWarpAudio().playHop();
+
+    // Dual-crew Time Echo: replay ~3s of the crew you just left.
+    this.ghostReplay = beginGhostReplay(this.echoRecorder, before, now);
+    this.echoRecorder = createEchoRecorder();
+    this.echoRecorder = recordEchoSample(
+      this.echoRecorder,
+      now,
+      this.playerX,
+      this.playerY,
+      isStealthed(this.mission, now)
+    );
 
     this.rebuildCoinGraphics();
     this.redrawStatic();
     const tint = this.mission.timeline === "dandy" ? [255, 62, 181] : [255, 217, 61];
     this.cameras.main.flash(120, tint[0], tint[1], tint[2], false, undefined, 0.12);
+  }
+
+  private advanceGhost(now: number): void {
+    if (!this.ghostReplay) {
+      this.ghostGfx.clear();
+      return;
+    }
+    const pose = ghostPoseAt(this.ghostReplay, now);
+    if (pose.done) {
+      this.ghostReplay = null;
+      this.ghostGfx.clear();
+      return;
+    }
+    drawTimeEchoGhost(
+      this.ghostGfx,
+      this.ghostReplay.crew,
+      pose.x,
+      pose.y,
+      pose.stealth,
+      pose.alpha
+    );
   }
 
   private spawnPeel(x: number, y: number): void {
@@ -285,16 +366,21 @@ export class PlayScene extends Phaser.Scene {
       if (!coin) continue;
       if (coin.timeline === "monkey") {
         drawBananaCoin(entry.gfx, coin.x, coin.y, entry.spin + this.coinSpin);
-      } else {
+      } else if (coin.timeline === "dandy") {
         drawGrooveCoin(entry.gfx, coin.x, coin.y, entry.spin + this.coinSpin);
+      } else {
+        drawNutCoin(entry.gfx, coin.x, coin.y, entry.spin + this.coinSpin);
       }
     }
 
     if (this.mission.timeline === "monkey") {
       drawMonkey(this.avatarGfx, this.playerX, this.playerY, stealth);
       drawGuard(this.guardGfx, this.guardX, GUARD_Y, this.mission.suspicion);
-    } else {
+    } else if (this.mission.timeline === "dandy") {
       drawDandyPatrol(this.avatarGfx, this.playerX, this.playerY, stealth);
+      this.guardGfx.clear();
+    } else {
+      drawNutTruck(this.avatarGfx, this.playerX, this.playerY, stealth);
       this.guardGfx.clear();
     }
 
@@ -321,9 +407,10 @@ export class PlayScene extends Phaser.Scene {
     this.hudObjective.setText(
       `Ship fuel ${this.mission.shipFuel}/${LAUNCH_FUEL}  ·  ${journeyMotto()}`
     );
+    const echoHint = this.ghostReplay ? " · TIME ECHO" : "";
     this.hudHint.setText(
       remaining > 0
-        ? `${remaining} coins left — hop timelines (T); destination rolls at launch`
+        ? `${remaining} coins left — hop (T) for Time Echo; destination rolls at launch${echoHint}`
         : "Fuel critical — launching…"
     );
   }

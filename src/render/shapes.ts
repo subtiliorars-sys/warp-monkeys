@@ -15,20 +15,34 @@ export function drawArenaFloor(
   timeline: Timeline
 ): void {
   g.clear();
-  const floor = timeline === "monkey" ? 0x2a2218 : 0x070010;
-  const wall = timeline === "monkey" ? 0x4a3728 : 0x3a1060;
-  const grid = timeline === "monkey" ? 0x4a3728 : 0x2a0848;
+  const floor = timeline === "monkey" ? 0x2a2218 : timeline === "dandy" ? 0x070010 : 0x242426;
+  const wall = timeline === "monkey" ? 0x4a3728 : timeline === "dandy" ? 0x3a1060 : 0xfecb00;
+  const grid = timeline === "monkey" ? 0x4a3728 : timeline === "dandy" ? 0x2a0848 : 0x3d3d40;
 
   g.fillStyle(floor, 1);
   g.fillRect(0, 0, w, h);
   g.lineStyle(2, wall, 0.85);
   g.strokeRect(24, 24, w - 48, h - 48);
-  g.lineStyle(1, grid, timeline === "dandy" ? 0.55 : 0.35);
-  for (let x = 40; x < w; x += 40) {
-    g.lineBetween(x, 40, x, h - 40);
-  }
-  for (let y = 40; y < h; y += 40) {
-    g.lineBetween(40, y, w - 40, y);
+
+  if (timeline === "nuts") {
+    // Draw road markings (double yellow lines in center, and white lanes)
+    g.lineStyle(2, 0xfecb00, 0.8);
+    g.lineBetween(40, h / 2 - 3, w - 40, h / 2 - 3);
+    g.lineBetween(40, h / 2 + 3, w - 40, h / 2 + 3);
+    
+    g.lineStyle(1, 0xffffff, 0.5);
+    for (let x = 60; x < w - 60; x += 40) {
+      g.lineBetween(x, h / 4, x + 20, h / 4);
+      g.lineBetween(x, (3 * h) / 4, x + 20, (3 * h) / 4);
+    }
+  } else {
+    g.lineStyle(1, grid, timeline === "dandy" ? 0.55 : 0.35);
+    for (let x = 40; x < w; x += 40) {
+      g.lineBetween(x, 40, x, h - 40);
+    }
+    for (let y = 40; y < h; y += 40) {
+      g.lineBetween(40, y, w - 40, y);
+    }
   }
 
   if (timeline === "dandy") {
@@ -55,9 +69,33 @@ export function drawGrooveCoin(g: Phaser.GameObjects.Graphics, x: number, y: num
   g.fillCircle(x + Math.cos(spin * 2) * 3, y + Math.sin(spin * 2) * 3, 3);
 }
 
-export function drawMonkey(g: Phaser.GameObjects.Graphics, x: number, y: number, stealth: boolean): void {
+export function drawNutCoin(g: Phaser.GameObjects.Graphics, x: number, y: number, spin: number): void {
   g.clear();
-  const alpha = stealth ? 0.45 : 1;
+  // Hazelnut shell base
+  g.fillStyle(0x8b5a2b, 1);
+  g.fillCircle(x, y + 2, 10);
+  
+  // Nut cap (hat)
+  g.fillStyle(0xcd853f, 1);
+  g.beginPath();
+  g.arc(x, y - 1, 10, Math.PI, 0, false);
+  g.fillPath();
+
+  // Little tip on the bottom
+  g.fillStyle(0x5c3a21, 1);
+  g.fillTriangle(x, y + 14, x - 3, y + 9, x + 3, y + 9);
+}
+
+export function drawMonkey(
+  g: Phaser.GameObjects.Graphics,
+  x: number,
+  y: number,
+  stealth: boolean,
+  alphaMul = 1
+): void {
+  g.clear();
+  const alpha = (stealth ? 0.45 : 1) * alphaMul;
+  if (alpha <= 0.01) return;
   g.fillStyle(BANANA, alpha);
   g.fillCircle(x, y, 14);
   g.fillStyle(0x8b6914, alpha);
@@ -72,15 +110,75 @@ export function drawMonkey(g: Phaser.GameObjects.Graphics, x: number, y: number,
   g.strokePath();
 }
 
-export function drawDandyPatrol(g: Phaser.GameObjects.Graphics, x: number, y: number, stealth: boolean): void {
+export function drawDandyPatrol(
+  g: Phaser.GameObjects.Graphics,
+  x: number,
+  y: number,
+  stealth: boolean,
+  alphaMul = 1
+): void {
   g.clear();
-  const alpha = stealth ? 0.45 : 1;
+  const alpha = (stealth ? 0.45 : 1) * alphaMul;
+  if (alpha <= 0.01) return;
   g.fillStyle(NEON_PINK, alpha);
   g.fillTriangle(x, y - 16, x - 14, y + 12, x + 14, y + 12);
   g.fillStyle(NEON_CYAN, alpha);
   g.fillRect(x - 6, y + 4, 12, 8);
   g.lineStyle(2, 0xffffff, alpha * 0.5);
   g.strokeTriangle(x, y - 16, x - 14, y + 12, x + 14, y + 12);
+}
+
+export function drawNutTruck(
+  g: Phaser.GameObjects.Graphics,
+  x: number,
+  y: number,
+  stealth: boolean,
+  alphaMul = 1
+): void {
+  g.clear();
+  const alpha = (stealth ? 0.45 : 1) * alphaMul;
+  if (alpha <= 0.01) return;
+
+  // Truck body (green/teal)
+  g.fillStyle(0x20b2aa, alpha);
+  g.fillRect(x - 16, y - 12, 24, 18);
+  
+  // Cabin (front, facing right)
+  g.fillStyle(0x1e88e5, alpha);
+  g.fillRect(x + 8, y - 6, 10, 12);
+  
+  // Cabin window
+  g.fillStyle(NEON_CYAN, alpha);
+  g.fillRect(x + 10, y - 4, 6, 5);
+
+  // Wheels
+  g.fillStyle(0x333333, alpha);
+  g.fillCircle(x - 10, y + 8, 5);
+  g.fillCircle(x + 10, y + 8, 5);
+  
+  // Giant nut logo on cargo side (orange circle with brown cap)
+  g.fillStyle(0xcd853f, alpha);
+  g.fillCircle(x - 4, y - 3, 5);
+  g.fillStyle(0x8b5a2b, alpha);
+  g.fillCircle(x - 4, y - 5, 4);
+}
+
+/** Translucent afterimage of the crew left behind on a timeline hop. */
+export function drawTimeEchoGhost(
+  g: Phaser.GameObjects.Graphics,
+  crew: Timeline,
+  x: number,
+  y: number,
+  stealth: boolean,
+  alpha: number
+): void {
+  if (crew === "monkey") {
+    drawMonkey(g, x, y, stealth, alpha);
+  } else if (crew === "dandy") {
+    drawDandyPatrol(g, x, y, stealth, alpha);
+  } else {
+    drawNutTruck(g, x, y, stealth, alpha);
+  }
 }
 
 export function drawGuard(g: Phaser.GameObjects.Graphics, x: number, y: number, alert: number): void {

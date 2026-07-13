@@ -1,6 +1,6 @@
 ﻿# CodeMonkeys: Warp Division
 
-Meta fleet comedy â€” **Warp Monkeys** and **Space Dandies** hop timelines, collect coins, and fuel a shared ship. **It's the journey** â€” random destination every launch. Phaser 3 + TypeScript.
+Meta fleet comedy — **Warp Monkeys** and **Space Dandies** hop timelines, collect coins, and fuel a shared ship. **It's the journey** — random destination every launch. Phaser 3 + TypeScript.
 
 | Surface | URL |
 |---------|-----|
@@ -9,7 +9,7 @@ Meta fleet comedy â€” **Warp Monkeys** and **Space Dandies** hop timelines,
 | **itch.io** | https://subtiliorars.itch.io/jimmythehat-codemonkeys-warp-division |
 | **Concept** | `agent-corps/concepts/WARP_MONKEYS.md` |
 
-> Original characters â€” CodeMonkeys platform comedy offshoot, not TV IP.
+> Original characters — CodeMonkeys platform comedy offshoot, not TV IP.
 
 ## First session
 
@@ -25,7 +25,7 @@ npm run package:itch   # zip for itch.io HTML upload
 npm run push:itch      # zip + butler (needs BUTLER_API_KEY + butler CLI)
 ```
 
-Launch checklist: `docs/PUBLIC_LAUNCH.md` Â· itch copy-paste: `docs/ITCH_PASTE_READY.md`
+Launch checklist: `docs/PUBLIC_LAUNCH.md` · itch copy-paste: `docs/ITCH_PASTE_READY.md`
 
 ## Controls
 
@@ -33,16 +33,16 @@ Launch checklist: `docs/PUBLIC_LAUNCH.md` Â· itch copy-paste: `docs/ITCH_PASTE
 |-------|--------|
 | WASD / arrows | Move (Chimp-7 or Groove Patrol avatar) |
 | Q | Space warp within timeline |
-| T | Timeline hop â€” Monkey HQ â†” Dandy Neon |
+| T | Timeline hop — Monkey HQ ↔ Dandy Neon (Time Echo ghost ~3s) |
 | SPACE | Start / retry |
 
-## Slice â€” shared fuel run
+## Slice — shared fuel run
 
-Collect **5 coins** to reach **75% ship fuel** and launch. Guard patrol active in Monkey HQ only.
+Collect **5 coins** to reach **75% ship fuel** and launch. Guard patrol active in Monkey HQ only. Press **T** to hop crews � a translucent **Time Echo** replays your last ~3s of movement as the crew you left behind.
 
 ## Waves
 
-Autonomous worker reads `WAVES.md` â€” one wave = one PR, branch prefix `automation/wave-*`.
+Autonomous worker reads `WAVES.md` — one wave = one PR, branch prefix `automation/wave-*`.
 
 ## Ethics
 

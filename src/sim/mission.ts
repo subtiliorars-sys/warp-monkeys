@@ -11,7 +11,7 @@ export const LAUNCH_FUEL = 75;
 export const FUEL_PER_COIN = 15;
 export const SHIP_FUEL_MAX = 100;
 
-export type Timeline = "monkey" | "dandy";
+export type Timeline = "monkey" | "dandy" | "nuts";
 export type MissionPhase = "active" | "launched" | "busted";
 
 export interface CoinDef {
@@ -28,6 +28,8 @@ export const MISSION_COINS: CoinDef[] = [
   { id: "d1", timeline: "dandy", x: 180, y: 480 },
   { id: "d2", timeline: "dandy", x: 400, y: 380 },
   { id: "d3", timeline: "dandy", x: 660, y: 160 },
+  { id: "n1", timeline: "nuts", x: 250, y: 220 },
+  { id: "n2", timeline: "nuts", x: 550, y: 300 },
 ];
 
 export interface MissionState {
@@ -90,9 +92,10 @@ export function applyWarp(state: MissionState, nowMs: number): MissionState {
 
 export function toggleTimeline(state: MissionState, nowMs: number): MissionState {
   if (!canTimelineHop(state, nowMs)) return state;
+  const nextTimeline = state.timeline === "monkey" ? "dandy" : state.timeline === "dandy" ? "nuts" : "monkey";
   return {
     ...state,
-    timeline: state.timeline === "monkey" ? "dandy" : "monkey",
+    timeline: nextTimeline,
     lastTimelineHopMs: nowMs,
     timelineHopCount: state.timelineHopCount + 1,
     suspicion: Math.max(0, state.suspicion - 8),

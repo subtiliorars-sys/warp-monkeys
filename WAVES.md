@@ -24,24 +24,24 @@ One wave = one PR. Branch prefix: `automation/wave-*`. Verify: `npm run verify`.
 - [ ] GitHub repo + Pages deploy (owner)
 
 ### Wave WM-W2 — Time Echo
-**Status:** `pending`  
-- [ ] Record 3s ghost replay for dual-crew switches
+**Status:** `active` (2026-07-13)  
+**Scope:**
+- [x] Record ~3s ghost replay for dual-crew switches (T hop)
+- [ ] Owner PR review / merge when asked
 
 ### Wave WM-W3 — Shared progress with space-dandy-game
-**Status:** `pending`  
-- [ ] Cross-repo localStorage fuel key
-- [ ] SD-W6 counterpart wave
+**Status:** `done` (2026-07-13)  
+- [x] Cross-repo localStorage fuel key
+- [x] SD-W6 counterpart wave
 
 ### Wave WM-W4 — Fleet easter eggs
-**Status:** `pending`  
-- [ ] DMN nut-truck third timeline
-- [ ] Destination reveal (owner)
-
-**Cancelled:** destination is random; extend `RANDOM_DESTINATIONS` instead.
+**Status:** `done` (2026-07-13)  
+- [x] DMN nut-truck third timeline (asphalt road + hazelnut coins + nut-truck avatar)
+- [x] Destination reveal (owner) -- Cancelled: destination is random; extend `RANDOM_DESTINATIONS` instead.
 
 ### Wave WM-W5 — Audio juice
-**Status:** `pending`  
-- [ ] Warp / hop / coin SFX stubs
+**Status:** `done` (2026-07-13)  
+- [x] Warp / hop / coin SFX stubs (`src/audio/warpAudio.ts`)
 
 ## Blocked (owner)
 
@@ -50,4 +50,9 @@ One wave = one PR. Branch prefix: `automation/wave-*`. Verify: `npm run verify`.
 
 ## Completed
 
-- *(none yet — W0 landing)*
+- **WM-W5** — Audio juice (procedural Web Audio stubs)
+- **WM-W4** — DMN nut-truck third timeline (nuts crossover)
+- **WM-W3** — cross-repo localStorage fuel key & SD-W6 companion
+- **WM-W2** — Time Echo dual-crew ghost replay
+- **WM-W1** — timeline hop + shared ship fuel mechanics
+- **WM-W0** — Training heist vertical slice (bootstrap)

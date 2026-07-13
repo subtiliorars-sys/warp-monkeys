@@ -28,13 +28,23 @@ describe("mission sim", () => {
     expect(applyWarp(state, WARP_COOLDOWN_MS).warpCount).toBe(2);
   });
 
-  it("timeline hop alternates lanes", () => {
+  it("timeline hop alternates lanes in a three-way cycle", () => {
     let state = createMissionState();
     expect(state.timeline).toBe("monkey");
     state = toggleTimeline(state, 0);
     expect(state.timeline).toBe("dandy");
     expect(state.timelineHopCount).toBe(1);
     expect(canTimelineHop(state, 100)).toBe(false);
+    
+    // Cycle to nuts
+    state.lastTimelineHopMs = -Infinity; // reset cooldown for test
+    state = toggleTimeline(state, 1000);
+    expect(state.timeline).toBe("nuts");
+    
+    // Cycle back to monkey
+    state.lastTimelineHopMs = -Infinity; // reset cooldown for test
+    state = toggleTimeline(state, 2000);
+    expect(state.timeline).toBe("monkey");
   });
 
   it("guard only sees player in monkey timeline", () => {
@@ -54,7 +64,7 @@ describe("mission sim", () => {
     }
     expect(state.shipFuel).toBeGreaterThanOrEqual(LAUNCH_FUEL);
     expect(state.phase).toBe("launched");
-    expect(state.collectedCoins.length).toBe(MISSION_COINS.length);
+    expect(state.collectedCoins.length).toBe(5);
   });
 
   it("partial coins add fuel without launch", () => {
