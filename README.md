@@ -1,6 +1,6 @@
-# CodeMonkeys: Warp Division
+﻿# CodeMonkeys: Warp Division
 
-Meta fleet comedy — **Warp Monkeys** and **Space Dandies** hop timelines, collect coins, and fuel a shared ship. **It's the journey** — random destination every launch. Phaser 3 + TypeScript.
+Meta fleet comedy â€” **Warp Monkeys** and **Space Dandies** hop timelines, collect coins, and fuel a shared ship. **It's the journey** â€” random destination every launch. Phaser 3 + TypeScript.
 
 | Surface | URL |
 |---------|-----|
@@ -9,7 +9,11 @@ Meta fleet comedy — **Warp Monkeys** and **Space Dandies** hop timelines, coll
 | **itch.io** | https://subtiliorars.itch.io/jimmythehat-codemonkeys-warp-division |
 | **Concept** | `agent-corps/concepts/WARP_MONKEYS.md` |
 
-> Original characters — CodeMonkeys platform comedy offshoot, not TV IP.
+> Original characters â€” CodeMonkeys platform comedy offshoot, not TV IP.
+
+## First session
+
+See `docs/FIRST-SESSION.md` for first-run expectations.
 
 ## Commands
 
@@ -21,7 +25,7 @@ npm run package:itch   # zip for itch.io HTML upload
 npm run push:itch      # zip + butler (needs BUTLER_API_KEY + butler CLI)
 ```
 
-Launch checklist: `docs/PUBLIC_LAUNCH.md` · itch copy-paste: `docs/ITCH_PASTE_READY.md`
+Launch checklist: `docs/PUBLIC_LAUNCH.md` Â· itch copy-paste: `docs/ITCH_PASTE_READY.md`
 
 ## Controls
 
@@ -29,17 +33,19 @@ Launch checklist: `docs/PUBLIC_LAUNCH.md` · itch copy-paste: `docs/ITCH_PASTE_R
 |-------|--------|
 | WASD / arrows | Move (Chimp-7 or Groove Patrol avatar) |
 | Q | Space warp within timeline |
-| T | Timeline hop — Monkey HQ ↔ Dandy Neon |
+| T | Timeline hop â€” Monkey HQ â†” Dandy Neon |
 | SPACE | Start / retry |
 
-## Slice — shared fuel run
+## Slice â€” shared fuel run
 
 Collect **5 coins** to reach **75% ship fuel** and launch. Guard patrol active in Monkey HQ only.
 
 ## Waves
 
-Autonomous worker reads `WAVES.md` — one wave = one PR, branch prefix `automation/wave-*`.
+Autonomous worker reads `WAVES.md` â€” one wave = one PR, branch prefix `automation/wave-*`.
 
 ## Ethics
 
 No dark patterns, no loot boxes, no FOMO timers. See `GOVERNANCE.md`.
+
+
