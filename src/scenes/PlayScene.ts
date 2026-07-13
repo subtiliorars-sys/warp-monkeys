@@ -82,6 +82,8 @@ export class PlayScene extends Phaser.Scene {
   private moveX = 0;
   private moveY = 0;
   private coinSpin = 0;
+  private paused = false;
+  private pauseOverlay!: Phaser.GameObjects.Text;
 
   private keys!: {
     w: Phaser.Input.Keyboard.Key;
@@ -170,6 +172,26 @@ export class PlayScene extends Phaser.Scene {
     kb.on("keydown-Q", () => this.tryWarp());
     kb.on("keydown-T", () => this.tryTimelineHop());
     kb.on("keydown-M", () => this.toggleMute());
+    kb.on("keydown-ESC", () => this.togglePause());
+
+    this.pauseOverlay = this.add
+      .text(
+        GAME_WIDTH / 2,
+        GAME_HEIGHT / 2,
+        "PAUSED\nWASD move · Q warp · T timeline hop\nM mute · Esc resume",
+        {
+          fontFamily: "monospace",
+          fontSize: "18px",
+          color: "#fff8e7",
+          align: "center",
+          backgroundColor: "#000000aa",
+          padding: { x: 16, y: 12 },
+        }
+      )
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(2000)
+      .setVisible(false);
 
     this.rebuildCoinGraphics();
     this.redrawStatic();
@@ -177,6 +199,8 @@ export class PlayScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number): void {
+    if (this.paused) return;
+
     const now = this.time.now;
     const dtMs = delta;
 
@@ -403,6 +427,11 @@ export class PlayScene extends Phaser.Scene {
   private toggleMute(): void {
     getWarpAudio().toggleMute();
     this.refreshMuteHud();
+  }
+
+  private togglePause(): void {
+    this.paused = !this.paused;
+    this.pauseOverlay.setVisible(this.paused);
   }
 
   private refreshMuteHud(): void {
