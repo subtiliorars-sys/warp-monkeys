@@ -71,7 +71,7 @@ export class TitleScene extends Phaser.Scene {
       .text(
         GAME_WIDTH / 2,
         320,
-        "WASD move  ·  Q space-warp  ·  T timeline hop (Time Echo)\nM mute  ·  SPACE to start",
+        "WASD move  ·  Q space-warp  ·  T timeline hop (Time Echo)\nM mute  ·  click or SPACE to start",
         {
           fontFamily: "monospace",
           fontSize: "16px",
