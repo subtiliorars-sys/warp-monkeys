@@ -86,6 +86,7 @@ export class PlayScene extends Phaser.Scene {
   private coinSpin = 0;
   private paused = false;
   private pauseOverlay!: Phaser.GameObjects.Text;
+  private onVisibilityChange!: () => void;
   private firstRunTip: Phaser.GameObjects.Text | null = null;
   private firstRunTipDismissed = false;
 
@@ -187,6 +188,14 @@ export class PlayScene extends Phaser.Scene {
     kb.on("keydown-T", () => this.tryTimelineHop());
     kb.on("keydown-M", () => this.toggleMute());
     kb.on("keydown-ESC", () => this.togglePause());
+
+    this.onVisibilityChange = () => {
+      if (document.hidden) this.setPaused(true);
+    };
+    document.addEventListener("visibilitychange", this.onVisibilityChange);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      document.removeEventListener("visibilitychange", this.onVisibilityChange);
+    });
 
     this.pauseOverlay = this.add
       .text(GAME_WIDTH / 2, GAME_HEIGHT / 2, "", {
@@ -446,8 +455,13 @@ export class PlayScene extends Phaser.Scene {
   }
 
   private togglePause(): void {
+    this.setPaused(!this.paused);
+  }
+
+  private setPaused(next: boolean): void {
+    if (this.paused === next) return;
     this.dismissFirstRunTip();
-    this.paused = !this.paused;
+    this.paused = next;
     this.refreshPauseOverlay();
     this.pauseOverlay.setVisible(this.paused);
   }
@@ -485,7 +499,7 @@ export class PlayScene extends Phaser.Scene {
     const muted = getWarpAudio().isMuted();
     const muteLine = muted ? "M · MUTED" : "M · sound on";
     this.pauseOverlay.setText(
-      `PAUSED\nWASD move · Q warp · T timeline hop\n${muteLine} · Esc resume`
+      `PAUSED\nWASD move · Q warp · T timeline hop\n${muteLine} · Esc resume\n(hiding the tab also pauses)`
     );
   }
 
