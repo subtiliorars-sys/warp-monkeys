@@ -1,0 +1,9 @@
+Kenney Space Shooter (Remastered) — CC0
+https://www.kenney.nl/assets/space-shooter-redux
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Files in this folder:
+  player-ship.png  — playerShip1_blue.png
+  enemy-guard.png  — Enemies/enemyBlack1.png
+
+Copied from game-visual-assets vendor/kenney/space-shooter-remastered.
