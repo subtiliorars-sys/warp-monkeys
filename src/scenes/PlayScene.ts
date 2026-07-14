@@ -28,6 +28,7 @@ import {
   type EchoRecorder,
   type GhostReplay,
 } from "../sim/timeEcho.js";
+import { KENNEY_TEXTURES } from "../assets/kenney.js";
 import { getWarpAudio } from "../audio/warpAudio.js";
 import {
   drawArenaFloor,
@@ -35,11 +36,9 @@ import {
   drawBananaPeel,
   drawDandyPatrol,
   drawGrooveCoin,
-  drawGuard,
   drawMonkey,
   drawNutCoin,
   drawNutTruck,
-  drawSharedShip,
   drawShipFuelBar,
   drawSuspicionBar,
   drawTimeEchoGhost,
@@ -60,8 +59,8 @@ export class PlayScene extends Phaser.Scene {
   private floor!: Phaser.GameObjects.Graphics;
   private avatarGfx!: Phaser.GameObjects.Graphics;
   private ghostGfx!: Phaser.GameObjects.Graphics;
-  private guardGfx!: Phaser.GameObjects.Graphics;
-  private shipHudGfx!: Phaser.GameObjects.Graphics;
+  private guardSprite!: Phaser.GameObjects.Image;
+  private shipHudSprite!: Phaser.GameObjects.Image;
   private fuelBarGfx!: Phaser.GameObjects.Graphics;
   private suspicionGfx!: Phaser.GameObjects.Graphics;
   private coinGfx: CoinGfx[] = [];
@@ -127,8 +126,18 @@ export class PlayScene extends Phaser.Scene {
     this.floor = this.add.graphics();
     this.ghostGfx = this.add.graphics().setDepth(9);
     this.avatarGfx = this.add.graphics().setDepth(10);
-    this.guardGfx = this.add.graphics().setDepth(5);
-    this.shipHudGfx = this.add.graphics().setDepth(900);
+    this.guardSprite = this.add
+      .image(0, 0, KENNEY_TEXTURES.enemyGuard)
+      .setDepth(5)
+      .setScale(0.55)
+      .setOrigin(0.5)
+      .setVisible(false);
+    this.shipHudSprite = this.add
+      .image(GAME_WIDTH / 2, 52, KENNEY_TEXTURES.playerShip)
+      .setDepth(900)
+      .setScale(0.45)
+      .setOrigin(0.5)
+      .setScrollFactor(0);
     this.fuelBarGfx = this.add.graphics().setDepth(900);
     this.suspicionGfx = this.add.graphics().setDepth(900);
 
@@ -401,18 +410,22 @@ export class PlayScene extends Phaser.Scene {
       }
     }
 
+    const fuelRatio = this.mission.shipFuel / SHIP_FUEL_MAX;
+
     if (this.mission.timeline === "monkey") {
       drawMonkey(this.avatarGfx, this.playerX, this.playerY, stealth);
-      drawGuard(this.guardGfx, this.guardX, GUARD_Y, this.mission.suspicion);
+      this.guardSprite.setVisible(true);
+      this.guardSprite.setPosition(this.guardX, GUARD_Y);
+      this.guardSprite.setAlpha(0.75 + this.mission.suspicion * 0.0025);
     } else if (this.mission.timeline === "dandy") {
       drawDandyPatrol(this.avatarGfx, this.playerX, this.playerY, stealth);
-      this.guardGfx.clear();
+      this.guardSprite.setVisible(false);
     } else {
       drawNutTruck(this.avatarGfx, this.playerX, this.playerY, stealth);
-      this.guardGfx.clear();
+      this.guardSprite.setVisible(false);
     }
 
-    drawSharedShip(this.shipHudGfx, GAME_WIDTH / 2, 52, this.mission.shipFuel / SHIP_FUEL_MAX);
+    this.shipHudSprite.setAlpha(fuelRatio > 0.5 ? 1 : 0.55);
     drawShipFuelBar(this.fuelBarGfx, 200, GAME_HEIGHT - 44, GAME_WIDTH - 400, this.mission.shipFuel / SHIP_FUEL_MAX);
     drawSuspicionBar(this.suspicionGfx, 200, GAME_HEIGHT - 28, GAME_WIDTH - 400, this.mission.suspicion / 100);
 

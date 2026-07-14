@@ -1,4 +1,4 @@
-# Shared game assets (agents — read this first)
+﻿# Shared game assets (agents — read this first)
 
 **Stop drawing colored boxes / procedural placeholders** when free art already lives
 in the house asset libraries.
@@ -32,6 +32,15 @@ Also indexed in `neural-network` → `connectome/repos.yaml`
 
 See the “Suggested mapping” sections in each library README, then pick the
 Kenney packs that match genre (platformer / sports / RPG / space / …).
+
+## Wired in this repo
+
+| Asset | Source | Used for |
+|-------|--------|----------|
+| `public/assets/kenney/player-ship.png` | Kenney `playerShip1_blue.png` | Play HUD ship icon |
+| `public/assets/kenney/enemy-guard.png` | Kenney `Enemies/enemyBlack1.png` | Monkey-timeline guard patrol |
+
+See `public/assets/kenney/ATTRIBUTION.txt` (CC0).
 
 ## Fetch more packs
 
