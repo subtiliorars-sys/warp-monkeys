@@ -49,6 +49,8 @@ type Peel = { x: number; y: number; gfx: Phaser.GameObjects.Graphics; ttl: numbe
 
 type CoinGfx = { id: string; gfx: Phaser.GameObjects.Graphics; spin: number };
 
+const FIRST_RUN_PAUSE_TIP_KEY = "warp-monkeys-pause-tip-seen-v1";
+
 const PLAYER_SPEED = 180;
 const GUARD_Y = 320;
 const GUARD_X_MIN = 120;
@@ -84,6 +86,8 @@ export class PlayScene extends Phaser.Scene {
   private coinSpin = 0;
   private paused = false;
   private pauseOverlay!: Phaser.GameObjects.Text;
+  private firstRunTip: Phaser.GameObjects.Text | null = null;
+  private firstRunTipDismissed = false;
 
   private keys!: {
     w: Phaser.Input.Keyboard.Key;
@@ -198,6 +202,7 @@ export class PlayScene extends Phaser.Scene {
       .setDepth(2000)
       .setVisible(false);
     this.refreshPauseOverlay();
+    this.maybeShowFirstRunPauseTip();
 
     this.rebuildCoinGraphics();
     this.redrawStatic();
@@ -441,9 +446,39 @@ export class PlayScene extends Phaser.Scene {
   }
 
   private togglePause(): void {
+    this.dismissFirstRunTip();
     this.paused = !this.paused;
     this.refreshPauseOverlay();
     this.pauseOverlay.setVisible(this.paused);
+  }
+
+  private maybeShowFirstRunPauseTip(): void {
+    if (typeof localStorage !== "undefined" && localStorage.getItem(FIRST_RUN_PAUSE_TIP_KEY)) {
+      this.firstRunTipDismissed = true;
+      return;
+    }
+
+    this.firstRunTip = this.add
+      .text(GAME_WIDTH / 2, GAME_HEIGHT - 56, "Tip: Esc pauses mid-mission", {
+        fontFamily: "monospace",
+        fontSize: "13px",
+        color: "#b8a88a",
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(1000);
+
+    this.time.delayedCall(6000, () => this.dismissFirstRunTip());
+  }
+
+  private dismissFirstRunTip(): void {
+    if (this.firstRunTipDismissed) return;
+    this.firstRunTipDismissed = true;
+    this.firstRunTip?.destroy();
+    this.firstRunTip = null;
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(FIRST_RUN_PAUSE_TIP_KEY, "1");
+    }
   }
 
   private refreshPauseOverlay(): void {
