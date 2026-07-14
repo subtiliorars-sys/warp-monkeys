@@ -106,7 +106,7 @@ export class TitleScene extends Phaser.Scene {
     this.input.keyboard?.once("keydown-SPACE", () => this.startMission());
     this.input.once("pointerdown", () => this.startMission());
 
-    const tipKey = "warp-monkeys-first-title-tip-v1";
+    const tipKey = "warp-monkeys-first-title-tip-v2";
     let tipSeen = false;
     try {
       tipSeen = typeof localStorage !== "undefined" && localStorage.getItem(tipKey) === "1";
@@ -118,7 +118,7 @@ export class TitleScene extends Phaser.Scene {
         .text(
           GAME_WIDTH / 2,
           GAME_HEIGHT - 72,
-          "First hop? Q warps · T flips timelines · coins feed the shared ship with Space Dandy",
+          "First hop? Q warps · T timelines · tab-hide pauses · coins feed Space Dandy ship",
           {
             fontFamily: "monospace",
             fontSize: "14px",
