@@ -6,6 +6,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from "../game.js";
 
 export class TitleScene extends Phaser.Scene {
   private floor!: Phaser.GameObjects.Graphics;
+  private muteHint!: Phaser.GameObjects.Text;
 
   constructor() {
     super("TitleScene");
@@ -16,7 +17,7 @@ export class TitleScene extends Phaser.Scene {
     drawArenaFloor(this.floor, GAME_WIDTH, GAME_HEIGHT, "monkey");
 
     this.add
-      .text(GAME_WIDTH / 2, 88, "CODEMONKEYS Ã— GROOVE PATROL", {
+      .text(GAME_WIDTH / 2, 88, "CODEMONKEYS × GROOVE PATROL", {
         fontFamily: "monospace",
         fontSize: "26px",
         color: "#ffd93d",
@@ -37,7 +38,7 @@ export class TitleScene extends Phaser.Scene {
         210,
         "Warp Monkeys and Space Dandies hop timelines\nand collect coins for the shared ship.\n" +
           journeyMotto() +
-          " â€” destination is random every launch.",
+          " — destination is random every launch.",
         {
           fontFamily: "monospace",
           fontSize: "17px",
@@ -71,7 +72,7 @@ export class TitleScene extends Phaser.Scene {
       .text(
         GAME_WIDTH / 2,
         320,
-        "WASD move  Â·  Q space-warp  Â·  T timeline hop (Time Echo)\nM mute  Â·  click or SPACE to start",
+        "WASD move · Q space-warp · T timeline hop (Time Echo)\nM mute · click or SPACE to start",
         {
           fontFamily: "monospace",
           fontSize: "16px",
@@ -82,16 +83,34 @@ export class TitleScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(GAME_WIDTH / 2, GAME_HEIGHT - 40, "fan homage â€” original characters Â· fleet crossover", {
+      .text(GAME_WIDTH / 2, GAME_HEIGHT - 40, "fan homage — original characters · fleet crossover", {
         fontFamily: "monospace",
         fontSize: "13px",
         color: "#7a6a50",
       })
       .setOrigin(0.5);
 
-    this.input.keyboard?.on("keydown-M", () => getWarpAudio().toggleMute());
+    this.muteHint = this.add
+      .text(GAME_WIDTH / 2, 348, "", {
+        fontFamily: "monospace",
+        fontSize: "13px",
+        color: "#7a6a50",
+      })
+      .setOrigin(0.5);
+    this.refreshMuteHint();
+
+    this.input.keyboard?.on("keydown-M", () => {
+      getWarpAudio().toggleMute();
+      this.refreshMuteHint();
+    });
     this.input.keyboard?.once("keydown-SPACE", () => this.startMission());
     this.input.once("pointerdown", () => this.startMission());
+  }
+
+  private refreshMuteHint(): void {
+    const muted = getWarpAudio().isMuted();
+    this.muteHint.setText(muted ? "M · MUTED" : "M · sound on");
+    this.muteHint.setColor(muted ? "#ff6b6b" : "#7a6a50");
   }
 
   private startMission(): void {
