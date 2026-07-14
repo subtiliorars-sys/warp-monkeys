@@ -118,6 +118,18 @@ export function guardActiveInTimeline(timeline: Timeline): boolean {
   return timeline === "monkey";
 }
 
+/** Player-facing label for the active timeline lane (HUD). */
+export function timelineDisplayName(timeline: Timeline): string {
+  switch (timeline) {
+    case "monkey":
+      return "MONKEY HQ";
+    case "dandy":
+      return "DANDY NEON";
+    case "nuts":
+      return "NUT TRUCK YARD";
+  }
+}
+
 export function guardSeesPlayer(
   guard: Vec2,
   player: Vec2,
