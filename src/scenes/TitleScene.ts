@@ -105,6 +105,38 @@ export class TitleScene extends Phaser.Scene {
     });
     this.input.keyboard?.once("keydown-SPACE", () => this.startMission());
     this.input.once("pointerdown", () => this.startMission());
+
+    const tipKey = "warp-monkeys-first-title-tip-v1";
+    let tipSeen = false;
+    try {
+      tipSeen = typeof localStorage !== "undefined" && localStorage.getItem(tipKey) === "1";
+    } catch {
+      tipSeen = true;
+    }
+    if (!tipSeen) {
+      const tip = this.add
+        .text(
+          GAME_WIDTH / 2,
+          GAME_HEIGHT - 72,
+          "First hop? Q warps · T flips timelines · coins feed the shared ship with Space Dandy",
+          {
+            fontFamily: "monospace",
+            fontSize: "14px",
+            color: "#3ef0ff",
+            align: "center",
+            wordWrap: { width: GAME_WIDTH - 40 },
+          },
+        )
+        .setOrigin(0.5);
+      this.time.delayedCall(8000, () => {
+        tip.destroy();
+        try {
+          localStorage.setItem(tipKey, "1");
+        } catch {
+          /* ignore */
+        }
+      });
+    }
   }
 
   private refreshMuteHint(): void {
