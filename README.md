@@ -11,6 +11,11 @@ Meta fleet comedy — **Warp Monkeys** and **Space Dandies** hop timelines, coll
 
 > Original characters — CodeMonkeys platform comedy offshoot, not TV IP.
 
+
+### First-run tip
+
+Open [Play](https://subtiliorars-sys.github.io/warp-monkeys/) (or `npm run dev`). Esc pauses; first sortie shows a one-time pause tip. Keep fuel in mind for crossover — fan homage, not official IP.
+
 ## First session
 
 See `docs/FIRST-SESSION.md` for first-run expectations.
