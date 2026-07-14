@@ -176,23 +176,19 @@ export class PlayScene extends Phaser.Scene {
     kb.on("keydown-ESC", () => this.togglePause());
 
     this.pauseOverlay = this.add
-      .text(
-        GAME_WIDTH / 2,
-        GAME_HEIGHT / 2,
-        "PAUSED\nWASD move · Q warp · T timeline hop\nM mute · Esc resume",
-        {
-          fontFamily: "monospace",
-          fontSize: "18px",
-          color: "#fff8e7",
-          align: "center",
-          backgroundColor: "#000000aa",
-          padding: { x: 16, y: 12 },
-        }
-      )
+      .text(GAME_WIDTH / 2, GAME_HEIGHT / 2, "", {
+        fontFamily: "monospace",
+        fontSize: "18px",
+        color: "#fff8e7",
+        align: "center",
+        backgroundColor: "#000000aa",
+        padding: { x: 16, y: 12 },
+      })
       .setOrigin(0.5)
       .setScrollFactor(0)
       .setDepth(2000)
       .setVisible(false);
+    this.refreshPauseOverlay();
 
     this.rebuildCoinGraphics();
     this.redrawStatic();
@@ -428,11 +424,21 @@ export class PlayScene extends Phaser.Scene {
   private toggleMute(): void {
     getWarpAudio().toggleMute();
     this.refreshMuteHud();
+    this.refreshPauseOverlay();
   }
 
   private togglePause(): void {
     this.paused = !this.paused;
+    this.refreshPauseOverlay();
     this.pauseOverlay.setVisible(this.paused);
+  }
+
+  private refreshPauseOverlay(): void {
+    const muted = getWarpAudio().isMuted();
+    const muteLine = muted ? "M · MUTED" : "M · sound on";
+    this.pauseOverlay.setText(
+      `PAUSED\nWASD move · Q warp · T timeline hop\n${muteLine} · Esc resume`
+    );
   }
 
   private refreshMuteHud(): void {
