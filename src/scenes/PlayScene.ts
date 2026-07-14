@@ -13,6 +13,7 @@ import {
   SHIP_FUEL_MAX,
   tickSuspicion,
   timelineHopCooldownRemainingMs,
+  timelineDisplayName,
   toggleTimeline,
   tryCollectCoins,
   visibleCoins,
@@ -447,8 +448,8 @@ export class PlayScene extends Phaser.Scene {
     this.hudWarp.setText(warpCd > 0 ? `Q WARP ${Math.ceil(warpCd / 1000)}s` : "Q WARP READY");
     this.hudTimeline.setText(
       hopCd > 0
-        ? `T HOP ${Math.ceil(hopCd / 1000)}s · ${this.mission.timeline.toUpperCase()}`
-        : `T HOP · ${this.mission.timeline === "monkey" ? "MONKEY HQ" : "DANDY NEON"}`
+        ? `T HOP ${Math.ceil(hopCd / 1000)}s · ${timelineDisplayName(this.mission.timeline)}`
+        : `T HOP · ${timelineDisplayName(this.mission.timeline)}`
     );
 
     const remaining = MISSION_COINS.length - this.mission.collectedCoins.length;

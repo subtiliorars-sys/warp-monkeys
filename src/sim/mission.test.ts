@@ -15,6 +15,7 @@ import {
   WARP_IFRAME_MS,
   rollRandomDestination,
   RANDOM_DESTINATIONS,
+  timelineDisplayName,
 } from "./mission.js";
 
 describe("mission sim", () => {
@@ -26,6 +27,12 @@ describe("mission sim", () => {
     expect(isStealthed(state, WARP_IFRAME_MS + 1)).toBe(false);
     expect(applyWarp(state, 500)).toEqual(state);
     expect(applyWarp(state, WARP_COOLDOWN_MS).warpCount).toBe(2);
+  });
+
+  it("timelineDisplayName covers all three lanes", () => {
+    expect(timelineDisplayName("monkey")).toBe("MONKEY HQ");
+    expect(timelineDisplayName("dandy")).toBe("DANDY NEON");
+    expect(timelineDisplayName("nuts")).toBe("NUT TRUCK YARD");
   });
 
   it("timeline hop alternates lanes in a three-way cycle", () => {
